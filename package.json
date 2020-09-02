@@ -1,0 +1,27 @@
+{
+  "name": "freshagric",
+  "version": "1.0.0",
+  "description": "Fresh Agric Server",
+  "main": "server.js",
+  "repository": "https://github.com/caffeines/freshagric.git",
+  "author": "caffeines <sadat.talks@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "express": "^4.17.1",
+    "express-controller": "^0.3.2",
+    "express-session": "^1.17.1",
+    "helmet": "^4.1.0",
+    "knex": "^0.21.5",
+    "morgan": "^1.10.0",
+    "pino-http": "^5.2.0",
+    "redis": "^3.0.2",
+    "uuid": "^8.3.0",
+    "validator": "^13.1.1"
+  }
+}
