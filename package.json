@@ -11,17 +11,25 @@
     "bcrypt": "^5.0.0",
     "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",
+    "connect-redis": "^5.0.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^4.17.1",
     "express-controller": "^0.3.2",
     "express-session": "^1.17.1",
     "helmet": "^4.1.0",
+    "ioredis": "^4.17.3",
     "knex": "^0.21.5",
     "morgan": "^1.10.0",
+    "passport": "^0.4.1",
     "pino-http": "^5.2.0",
     "redis": "^3.0.2",
     "uuid": "^8.3.0",
     "validator": "^13.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.8.1",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0"
   }
 }
