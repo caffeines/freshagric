@@ -1,19 +1,16 @@
-const http = require('http');
 const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const expressSession = require('express-session');
 const RedisStore = require('connect-redis')(expressSession);
-const expressController = require('express-controller');
-const passport = require('passport');
+// const passport = require('passport');
 const bodyParser = require('body-parser');
+const bindControllersAsync = require('./controllers');
 const response = require('./middleware/response');
-const knexhelper = require('./lib/knexhelper');
-const databaseConfig = require('./config/database');
 const config = require('./config');
 const redis = require('./lib/redis');
-const errorCodes = require('./constants/errorCodes');
+const bindDatabase = require('./database');
 
 const setupServer = async () => {
   const app = express();
@@ -59,21 +56,9 @@ const setupServer = async () => {
     }
     next();
   });
-  const bindControllersAsync = () => new Promise((resolve, reject) => {
-    const router = express.Router();
-    app.use(router);
-    expressController.setDirectory(`${__dirname}/controllers`).bind(router, (err) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-      } else {
-        if (process.env.NODE_ENV !== 'test') { console.log('controllers bound successfully'); }
-        resolve();
-      }
-    });
-  });
-  await bindControllersAsync();
 
+  await bindControllersAsync(app);
+  // await bindDatabase();
   app.listen(4123, () => console.log('server running on port 4123'));
 };
 

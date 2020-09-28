@@ -1,8 +1,8 @@
 const path = require('path');
 const pgConfig = require('./config/database');
 
-const migrationsDir = path.join(__dirname, './knex/migrations');
-const seedsDir = path.join(__dirname, './knex/seeds');
+const migrationsDir = path.join(__dirname, './database/migrations');
+const seedsDir = path.join(__dirname, './database/seeds');
 
 exports[process.env.NODE_ENV] = {
   client: 'pg',
