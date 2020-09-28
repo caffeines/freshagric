@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const userDao = require('../../data/userDao.js');
 const authValidator = require('../../middleware/validator/auth');
 const errorCodes = require('../../constants/errorCodes');
@@ -38,7 +39,8 @@ module.exports = {
           });
           return;
         }
-        const createdUser = await userDao.createUser(req.body);
+        const hashPassword = await bcrypt.hash(req.body.password, config.server.saltRound);
+        const createdUser = await userDao.createUser({ ...req.body, password: hashPassword });
         console.log(createdUser);
         res.ok({ data: createdUser });
       } catch (err) {
@@ -85,7 +87,55 @@ module.exports = {
         });
       } catch (err) {
         console.log(err);
-
+        res.serverError(err);
+      }
+    },
+  ],
+  post_login: [
+    authValidator.loginValidator,
+    async (req, res) => {
+      const { email, password } = req.body;
+      try {
+        const user = await userDao.findUserByEmail(email, true);
+        if (!user) {
+          res.notFound({
+            title: 'User is not registered',
+            code: errorCodes.USER_NOT_FOUND,
+          });
+          return;
+        }
+        if (!user.isVerified) {
+          const expiresAt = utils.getExpirationTime(
+            user.verificationCodeGeneratedAt, config.security.verificationCodeTTL,
+          );
+          const isPending = expiresAt > new Date();
+          if (isPending) {
+            res.forbidden({
+              title: 'Verify your email',
+              code: errorCodes.USER_NOT_VERIFIED,
+            });
+            return;
+          }
+          const code = await userDao.updateVerificationCode(user.email);
+          console.log(code);
+          // TODO: Send email later
+          res.forbidden({
+            title: 'Verify your email',
+            code: errorCodes.USER_NOT_VERIFIED,
+          });
+          return;
+        }
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
+          res.unauthorized({
+            title: 'Incorrect password',
+            code: errorCodes.INCORRECT_PASSWORD,
+          });
+          return;
+        }
+        res.ok({ data: user });
+      } catch (err) {
+        console.log(err);
         res.serverError(err);
       }
     },
