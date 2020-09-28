@@ -1,7 +1,7 @@
 const { formatEnv } = require('../lib/utils');
 
 const vars = formatEnv([
-  { name: 'SESSION_NAME', defaultValue: 'SESSION_ID' },
+  { name: 'SESSION_NAME', defaultValue: 'session_id' },
   { name: 'SESSION_SECRET' },
   { name: 'SESSION_MAX_AGE', type: 'number', defaultValue: 365 * 24 * 60 * 60 * 1000 },
 ]);

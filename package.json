@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Fresh Agric Server",
   "main": "server.js",
+  "scripts": {
+    "start": ". ./loadEnv ./dev.env && nodemon app"
+  },
   "repository": "https://github.com/caffeines/freshagric.git",
   "author": "caffeines <sadat.talks@gmail.com>",
   "license": "MIT",
@@ -19,6 +22,7 @@
     "express-session": "^1.17.1",
     "helmet": "^4.1.0",
     "ioredis": "^4.17.3",
+    "joi": "^17.2.1",
     "knex": "^0.21.5",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",

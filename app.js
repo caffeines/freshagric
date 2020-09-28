@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const expressSession = require('express-session');
 const RedisStore = require('connect-redis')(expressSession);
+const expressController = require('express-controller');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const response = require('./middleware/response');
@@ -16,7 +17,6 @@ const errorCodes = require('./constants/errorCodes');
 
 const setupServer = async () => {
   const app = express();
-  const server = http.createServer(app);
   if (process.env.NODE_ENV === undefined || process.env.NODE_ENV === null
     || process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
@@ -59,4 +59,24 @@ const setupServer = async () => {
     }
     next();
   });
+  const bindControllersAsync = () => new Promise((resolve, reject) => {
+    const router = express.Router();
+    app.use(router);
+    expressController.setDirectory(`${__dirname}/controllers`).bind(router, (err) => {
+      if (err) {
+        console.error(err);
+        reject(err);
+      } else {
+        if (process.env.NODE_ENV !== 'test') { console.log('controllers bound successfully'); }
+        resolve();
+      }
+    });
+  });
+  await bindControllersAsync();
+
+  app.listen(4123, () => console.log('server running on port 4123'));
 };
+
+setupServer().catch((err) => {
+  console.log(err);
+});

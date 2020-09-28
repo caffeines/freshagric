@@ -6,7 +6,5 @@ module.exports = {
    * @returns {Promise} - a Promise, resolving to the user value
    *   with the ID of the user in the database.
    */
-  createUser: async (user) => {
-    console.log(user);
-  },
+  createUser: async (user) => user,
 };

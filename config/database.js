@@ -2,7 +2,7 @@ const { formatEnv } = require('../lib/utils');
 
 const vars = formatEnv([
   { name: 'PG_HOST' },
-  { name: 'PG_PORT', type: 'number', defaultValue: 3306 },
+  { name: 'PG_PORT', type: 'number', defaultValue: 5432 },
   { name: 'PG_DATABASE' },
   { name: 'PG_USER' },
   { name: 'PG_PASSWORD' },

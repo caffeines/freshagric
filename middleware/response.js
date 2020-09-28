@@ -24,7 +24,7 @@ module.exports = (req, res, next) => {
         title,
         status: statusCode,
       };
-      if (statusCode !== '200' && !code) {
+      if (statusCode !== '200' && !code && statusCode !== '500') {
         throw new Error('Error code must be defined');
       }
       if (statusCode !== '200' && statusCode !== '500') {
