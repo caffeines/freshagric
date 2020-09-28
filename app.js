@@ -57,8 +57,8 @@ const setupServer = async () => {
     next();
   });
 
-  await bindControllersAsync(app);
   await bindDatabase();
+  await bindControllersAsync(app);
   const port = Number(process.env.PORT) || config.server.port;
   app.listen(port, () => console.log(`server running on port ${port}...`));
 };

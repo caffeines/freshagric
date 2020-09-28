@@ -221,6 +221,11 @@ ansi-styles@^4.1.0:
     "@types/color-name" "^1.1.1"
     color-convert "^2.0.1"
 
+any-base@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/any-base/-/any-base-1.1.0.tgz#ae101a62bc08a597b4c9ab5b7089d456630549fe"
+  integrity sha512-uMgjozySS8adZZYePpaWs8cxB9/kdzmpX6SgJZ+wbz1K5eYk5QMYDVJaZKhxyIHUdnnJkfR7SVgStgH7LkGUyg==
+
 append-transform@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/append-transform/-/append-transform-1.0.0.tgz#046a52ae582a228bd72f58acfbe2967c678759ab"
@@ -3444,6 +3449,14 @@ shebang-regex@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
+
+short-uuid@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/short-uuid/-/short-uuid-4.1.0.tgz#c959f46101b4278e2589d5c85b4c35a385b51764"
+  integrity sha512-Zjerp00N5uUC7ET1mEjz77vY9h5zm6IQivtHxcbnoSIWyK6PD/dQnU5w916F8lzQIJjxBTEbCKsAikE64WxUxQ==
+  dependencies:
+    any-base "^1.1.0"
+    uuid "^8.3.0"
 
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.3"
