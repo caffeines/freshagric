@@ -47,4 +47,47 @@ module.exports = {
       }
     },
   ],
+  get_verify_email: [
+    async (req, res, email) => {
+      const { token } = req.query;
+      try {
+        const vCode = await userDao.verifyUser(email, token);
+        if (vCode === 'notFound') {
+          res.notFound({
+            title: 'User not found',
+            code: errorCodes.USER_NOT_FOUND,
+          });
+          return;
+        }
+        if (vCode === 'alreadyVerified') {
+          res.badRequest({
+            title: 'Email already verified',
+            code: errorCodes.EMAIL_ALREADY_VERIFIED,
+          });
+          return;
+        }
+        if (vCode === 'doesNotMatch') {
+          res.unauthorized({
+            title: 'Verification code does not match',
+            code: errorCodes.VERIFICATION_CODE_NOT_MATCH,
+          });
+          return;
+        }
+        if (vCode === 'expired') {
+          res.badRequest({
+            title: 'Verification code expired',
+            code: errorCodes.VERIFICATION_CODE_EXPIRED,
+          });
+          return;
+        }
+        res.ok({
+          title: 'Email verification successful',
+        });
+      } catch (err) {
+        console.log(err);
+
+        res.serverError(err);
+      }
+    },
+  ],
 };

@@ -18,4 +18,6 @@ module.exports = {
   findUserByEmail: async (email, safe) => impl.findUserByEmail(email, safe),
 
   updateVerificationCode: async (email) => impl.updateVerificationCode(email),
+
+  verifyUser: async (email, code) => impl.verifyUser(email, code),
 };

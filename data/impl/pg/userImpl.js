@@ -1,6 +1,7 @@
 const shortUUID = require('short-uuid');
 const knex = require('../../../lib/knexhelper').getKnexInstance();
 const constant = require('../../../constants');
+const utils = require('../../../lib/utils');
 
 const safeFields = ['email', 'name', 'userType', 'userStatus', 'joinedAt', 'contact'];
 
@@ -46,9 +47,32 @@ module.exports = {
       const updateData = {
         verificationCode: shortUUID.generate(),
         verificationCodeGeneratedAt: new Date(),
+        updatedAt: new Date(),
       };
       await knex('Users').update(updateData).where({ email });
       return updateData;
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+  verifyUser: async (email, verificationCode) => {
+    try {
+      const result = await knex.transaction(async (txn) => {
+        const [user] = await txn('Users').where({ email }).forUpdate();
+        if (!user) return 'notFound';
+        if (user.isVerified) return 'alreadyVerified';
+        const verificationCodeExpiresAt = utils.getExpirationTime(user.verificationCodeGeneratedAt);
+        if (verificationCodeExpiresAt <= new Date()) return 'expired';
+        if (user.verificationCode !== verificationCode) return 'doesNotMatch';
+        await txn('Users').update({
+          isVerified: true,
+          verificationCode: null,
+          userStatus: constant.userStatus.ACTIVE,
+          updatedAt: new Date(),
+        }).where({ email });
+        return 'success';
+      });
+      return result;
     } catch (err) {
       return Promise.reject(err);
     }
