@@ -1,6 +1,5 @@
 exports.up = function (knex) {
   return knex.schema.createTable('Users', (t) => {
-    t.string('email');
     t.string('contact', 20);
     t.string('email', 150);
     t.string('password');

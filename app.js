@@ -58,8 +58,9 @@ const setupServer = async () => {
   });
 
   await bindControllersAsync(app);
-  // await bindDatabase();
-  app.listen(4123, () => console.log('server running on port 4123'));
+  await bindDatabase();
+  const port = Number(process.env.PORT) || config.server.port;
+  app.listen(port, () => console.log(`server running on port ${port}...`));
 };
 
 setupServer().catch((err) => {

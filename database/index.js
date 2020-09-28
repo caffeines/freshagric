@@ -6,6 +6,6 @@ const bindDatabase = async () => {
   const knex = knexhelper.getKnexInstance();
   // wait for knex to connect, verify by executing query
   await knex.raw('SELECT 1;');
-  console.log('connected to mysql');
+  console.log('connected to postgres');
 };
 module.exports = bindDatabase;
