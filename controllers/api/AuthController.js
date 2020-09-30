@@ -43,7 +43,8 @@ module.exports = {
         const hashPassword = await bcrypt.hash(req.body.password, config.server.saltRound);
         const createdUser = await userDao.createUser({ ...req.body, password: hashPassword });
         console.log(createdUser);
-        res.ok({ data: createdUser });
+
+        res.ok({ title: 'User created successfully' });
       } catch (err) {
         console.log(err);
         res.serverError(err);

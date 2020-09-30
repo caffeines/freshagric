@@ -1,6 +1,8 @@
 const auth = require('../../middleware/auth');
 const validator = require('../../middleware/validator/product');
 const productDao = require('../../data/productDao');
+const utils = require('../../lib/utils');
+const errorCodes = require('../../constants/errorCodes');
 
 module.exports = {
   get_index: [
@@ -24,7 +26,14 @@ module.exports = {
         res.ok({ data: product });
       } catch (err) {
         console.log(err);
-
+        const isDuplicate = utils.isAlreadyExist(err);
+        if (isDuplicate) {
+          res.conflict({
+            title: 'Product name already exist',
+            code: errorCodes.PRODUCT_ALREADY_EXIST,
+          });
+          return;
+        }
         res.serverError(err);
       }
     },
