@@ -4,9 +4,14 @@ const productDao = require('../../data/productDao');
 
 module.exports = {
   get_index: [
-    auth.authenticate,
     async (req, res) => {
-      res.ok({ data: req.user || req.admin });
+      try {
+        const products = await productDao.getAllProducts();
+        res.ok({ data: products });
+      } catch (err) {
+        console.log(err);
+        res.serverError(err);
+      }
     },
   ],
   post_index: [

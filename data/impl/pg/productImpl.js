@@ -3,6 +3,10 @@ const shortId = require('shortid');
 const slug = require('slug');
 const knex = require('../../../lib/knexhelper').getKnexInstance();
 
+const safeFields = ['cost', 'createdBy', 'updatedBy', 'updatedAt'];
+const selectFields = ['createdAt', 'SKU', 'slug', 'id', 'name', 'description',
+  'category', 'price', 'unit', 'stock', 'isOrganic', 'image'];
+
 module.exports = {
   /**
    * Create a new product.
@@ -22,6 +26,18 @@ module.exports = {
       };
       await knex('Products').insert(product);
       return product;
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
+  getAll: async (safe = false) => {
+    try {
+      if (safe) selectFields.push(...safeFields);
+      const products = await knex('Products')
+        .select(selectFields)
+        .where({ isPublished: true });
+      return products;
     } catch (err) {
       return Promise.reject(err);
     }

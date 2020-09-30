@@ -9,4 +9,6 @@ module.exports = {
    *   with the ID of the product in the database.
   */
   createProduct: async (data) => productImpl.create(data),
+
+  getAllProducts: async (safe = false) => productImpl.getAll(safe),
 };
