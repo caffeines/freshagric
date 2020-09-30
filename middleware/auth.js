@@ -45,6 +45,9 @@ const authorizeAdminOrOwner = (req, res, next) => {
     next();
     return;
   }
-  res.forbidden({ message: 'forbidden' });
+  res.forbidden({
+    title: 'You are not authorized',
+    code: errorCodes.NOT_ADMIN_OR_OWNER,
+  });
 };
 exports.authorizeAdminOrOwner = authorizeAdminOrOwner;

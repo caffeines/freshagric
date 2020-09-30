@@ -7,7 +7,7 @@ const safeFields = ['email', 'name', 'userType', 'userStatus', 'joinedAt', 'cont
 
 module.exports = {
   /**
-   * Create a new site.
+   * Create a new user.
    * @async
    * @param {Object} user - a user object.
    * @returns {Promise} - a Promise, resolving to the user value
