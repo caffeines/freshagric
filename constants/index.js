@@ -8,6 +8,9 @@ module.exports = {
   userType: {
     PUBLIC: 'public',
     INVESTOR: 'investor',
+    ADMIN: 'admin',
+    MODERATOR: 'moderator',
+    PROFESSOR: 'professor',
   },
   productStatus: {
     IN_STOCK: 'inStock',

@@ -4,6 +4,7 @@ const authValidator = require('../../middleware/validator/auth');
 const errorCodes = require('../../constants/errorCodes');
 const utils = require('../../lib/utils');
 const config = require('../../config');
+const jwt = require('../../lib/jwt');
 
 module.exports = {
   post_register: [
@@ -133,7 +134,16 @@ module.exports = {
           });
           return;
         }
-        res.ok({ data: user });
+        const token = await jwt.generateToken(user);
+        const profile = {
+          name: user.name,
+          contact: user.contact,
+          userType: user.userType,
+          profilePicture: user.profilePicture,
+          address: user.address,
+          joinedAt: user.joinedAt,
+        };
+        res.ok({ data: { profile, token } });
       } catch (err) {
         console.log(err);
         res.serverError(err);
