@@ -5,6 +5,20 @@ const utils = require('../../lib/utils');
 const errorCodes = require('../../constants/errorCodes');
 
 module.exports = {
+  get_search: [
+    async (req, res) => {
+      try {
+        const { name } = req.query;
+        const products = await productDao.searchByName(name);
+        console.log(products);
+
+        res.ok({ data: products });
+      } catch (err) {
+        console.log(err);
+        res.serverError(err);
+      }
+    },
+  ],
   get_index: [
     async (req, res) => {
       try {
@@ -25,7 +39,6 @@ module.exports = {
         const product = await productDao.createProduct({ ...req.body, createdBy: req.admin.email });
         res.ok({ data: product });
       } catch (err) {
-        console.log(err);
         const isDuplicate = utils.isAlreadyExist(err);
         if (isDuplicate) {
           res.conflict({
@@ -34,6 +47,7 @@ module.exports = {
           });
           return;
         }
+        console.log(err);
         res.serverError(err);
       }
     },

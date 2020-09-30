@@ -42,4 +42,16 @@ module.exports = {
       return Promise.reject(err);
     }
   },
+
+  search: async (name, safe = false) => {
+    try {
+      if (safe) selectFields.push(...safeFields);
+      const products = knex('Products')
+        .select(selectFields)
+        .where('name', 'ilike', `%${name}%`);
+      return products;
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
 };

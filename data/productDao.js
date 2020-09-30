@@ -11,4 +11,6 @@ module.exports = {
   createProduct: async (data) => productImpl.create(data),
 
   getAllProducts: async (safe = false) => productImpl.getAll(safe),
+
+  searchByName: async (name, safe = false) => productImpl.search(name, safe),
 };
