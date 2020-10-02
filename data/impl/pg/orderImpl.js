@@ -30,7 +30,8 @@ module.exports = {
             await txn.rollback();
             throw (new Error('Invalid product order'));
           }
-          return products[idx].stock > 0;
+          const q = orderItemsObj[pid].quantity;
+          return products[idx].stock - q >= 0;
         };
         const orderItems = [];
         items.forEach((item) => {

@@ -1,4 +1,5 @@
 const auth = require('../../middleware/auth');
+const validator = require('../../middleware/validator/order');
 
 module.exports = {
   get_index: [
@@ -39,9 +40,10 @@ module.exports = {
   ],
   post: [
     auth.authenticate,
+    validator.createOrderValidate,
     async (req, res) => {
       try {
-        res.ok();
+        res.ok({});
       } catch (err) {
         console.log(err);
         res.serverError(err);
