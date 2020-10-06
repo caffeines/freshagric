@@ -1,11 +1,12 @@
 const { v4: uuid } = require('uuid');
 const constants = require('../../../constants');
+const knex = require('../../../lib/knexhelper').getKnexInstance();
 
 module.exports = {
   create: async (data) => {
     try {
       const { items, userId, deliveryAddress } = data;
-      const ret = await this.knex.transaction(async (txn) => {
+      const ret = await knex.transaction(async (txn) => {
         const orderItemsObj = {};
         const orderItemsId = [];
         items.forEach((oi) => {
@@ -23,19 +24,22 @@ module.exports = {
           status: constants.orderStatus.IN_QUEUE,
           createdAt: new Date(),
         };
-        await txn('Order').insert(order);
+        await txn('Orders').insert(order);
         const isStockAvailable = async (pid) => {
           const idx = products.findIndex((p) => p.id === pid);
           if (idx < 0) {
             await txn.rollback();
-            throw (new Error('Invalid product order'));
+            return -1;
           }
           const q = orderItemsObj[pid].quantity;
           return products[idx].stock - q >= 0;
         };
+        if (isStockAvailable === -1) {
+          return { code: 'notAvailable' };
+        }
         const orderItems = [];
         items.forEach((item) => {
-          if (isStockAvailable) {
+          if (isStockAvailable === 1) {
             orderItems.push({
               orderId: order.id,
               productId: item.productId,
@@ -52,6 +56,7 @@ module.exports = {
         });
         await txn('OrderItems').insert(orderItems);
         await Promise.all(promises);
+        return { code: 'success', order, orderItems };
       });
       return ret;
     } catch (err) {
