@@ -45,23 +45,19 @@ module.exports = {
     validator.createOrderValidate,
     async (req, res) => {
       try {
-        console.log(req.body);
-
-        const { code, order, orderItems } = await orderDao.create({
+        const { order, orderItems } = await orderDao.create({
           ...req.body,
           userId: req.admin.email,
         });
-        console.log(code, order, orderItems);
-        if (code === 'notAvailable') {
+        res.ok({ data: { order, orderItems } });
+      } catch (err) {
+        if (err.message === 'notAvailable') {
           res.badRequest({
             title: 'Product not available',
             code: errorCodes.PRODUCT_NOT_AVAILAVLE,
           });
           return;
         }
-        res.ok({ order, orderItems });
-      } catch (err) {
-        console.log(err);
         res.serverError(err);
       }
     },

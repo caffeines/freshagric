@@ -14,6 +14,7 @@ module.exports = {
           orderItemsObj[oi.productId] = oi;
         });
         const products = await txn('Products').whereIn('id', orderItemsId);
+
         const totalPrice = products
           .reduce((sum, p) => sum + p.price * orderItemsObj[p.id].quantity, 0);
         const order = {
@@ -25,21 +26,20 @@ module.exports = {
           createdAt: new Date(),
         };
         await txn('Orders').insert(order);
-        const isStockAvailable = async (pid) => {
+        const isStockAvailable = (pid) => {
           const idx = products.findIndex((p) => p.id === pid);
           if (idx < 0) {
-            await txn.rollback();
             return -1;
           }
           const q = orderItemsObj[pid].quantity;
           return products[idx].stock - q >= 0;
         };
-        if (isStockAvailable === -1) {
-          return { code: 'notAvailable' };
-        }
+        let notAvailable = false;
         const orderItems = [];
         items.forEach((item) => {
-          if (isStockAvailable === 1) {
+          const flag = isStockAvailable(item.productId);
+          if (!flag) notAvailable = true;
+          if (flag) {
             orderItems.push({
               orderId: order.id,
               productId: item.productId,
@@ -47,6 +47,10 @@ module.exports = {
             });
           }
         });
+        if (notAvailable) {
+          await txn.rollback(new Error('notAvailable'));
+          return {};
+        }
         const promises = [];
         orderItems.forEach(({ quantity, productId }) => {
           const promise = txn('Products')
@@ -56,7 +60,7 @@ module.exports = {
         });
         await txn('OrderItems').insert(orderItems);
         await Promise.all(promises);
-        return { code: 'success', order, orderItems };
+        return { order, orderItems };
       });
       return ret;
     } catch (err) {
