@@ -67,4 +67,38 @@ module.exports = {
       return Promise.reject(err);
     }
   },
+  findByUserEmail: async (email) => {
+    const orders = await knex('Orders as O')
+      .join('OrderItems as OI', 'OI.orderId', 'O.id')
+      .where({ userId: email });
+
+    const ret = [];
+    const orderMap = {};
+    let idx = 0;
+    orders.forEach((o) => {
+      const {
+        id, userId, createdAt, updatedAt, status, totalPrice, deliveryAddress, uodatedAt,
+        productId, quantity,
+      } = o;
+      const mapedIdx = orderMap[o.id];
+      if (mapedIdx === undefined) {
+        orderMap[o.id] = idx;
+        ret.push({
+          id,
+          userId,
+          createdAt,
+          updatedAt,
+          status,
+          totalPrice,
+          deliveryAddress,
+          uodatedAt,
+          orderItems: [{ productId, quantity }],
+        });
+        idx += 1;
+      } else {
+        ret[mapedIdx].orderItems.push({ productId, quantity });
+      }
+    });
+    return ret;
+  },
 };

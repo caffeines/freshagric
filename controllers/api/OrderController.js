@@ -20,7 +20,9 @@ module.exports = {
     auth.authenticate,
     async (req, res) => {
       try {
-        res.ok();
+        const email = req.user ? req.user.email : req.admin.email;
+        const orders = await orderDao.findByUserEmail(email);
+        res.ok({ data: orders });
       } catch (err) {
         console.log(err);
         res.serverError(err);
