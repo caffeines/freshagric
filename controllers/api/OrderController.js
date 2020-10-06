@@ -33,9 +33,8 @@ module.exports = {
     auth.authenticate,
     async (req, res, orderId) => {
       try {
-        console.log(orderId);
-
-        res.ok();
+        const { order, orderItems } = await orderDao.findByid(orderId);
+        res.ok({ data: { ...order, orderItems } });
       } catch (err) {
         console.log(err);
         res.serverError(err);

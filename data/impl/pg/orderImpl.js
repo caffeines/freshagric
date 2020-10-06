@@ -115,4 +115,14 @@ module.exports = {
     });
     return ret;
   },
+  findByid: async (orderId) => {
+    const [order] = await knex('Orders as O').where({ id: orderId });
+    const orderItems = await knex('OrderItems as OI')
+      .rightJoin('Products as P', 'P.id', 'OI.productId')
+      .select(['P.id as productId', 'OI.quantity', 'P.name', 'slug',
+        'category', 'SKU', 'price', 'image', 'unit'])
+      .where({ orderId });
+
+    return { order, orderItems };
+  },
 };
