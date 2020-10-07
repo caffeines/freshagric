@@ -86,9 +86,24 @@ module.exports = {
   },
   updateById: async (orderId, option) => {
     try {
-      await knex('Orders').update(option)
-        .where({ id: orderId });
+      await knex('Orders').update({
+        ...option,
+        updatedAt: new Date(),
+      }).where({ id: orderId });
+
       return {};
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+  findAll: async () => {
+    try {
+      const selectFields = ['U.name as user', 'U.contact', 'U.email', 'U.address', 'O.id', 'O.createdAt',
+        'O.updatedAt', 'status', 'deliveryAddress', 'totalPrice'];
+      const orders = await knex('Orders as O')
+        .join('Users as U', 'U.email', 'O.userId')
+        .select(selectFields);
+      return orders;
     } catch (err) {
       return Promise.reject(err);
     }
