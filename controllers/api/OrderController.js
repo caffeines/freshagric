@@ -3,6 +3,8 @@ const validator = require('../../middleware/validator/order');
 const orderDao = require('../../data/orderDao');
 const orderItemDao = require('../../data/orderItemDao');
 const errorCodes = require('../../constants/errorCodes');
+const constants = require('../../constants/index');
+const erorrCodes = require('../../constants/errorCodes');
 
 module.exports = {
   get_index: [
@@ -67,11 +69,11 @@ module.exports = {
   ],
   patch_cancel_orderId: [
     auth.authenticate,
+    validator.validateOrderdUser,
     async (req, res, orderId) => {
       try {
-        console.log(orderId);
-
-        res.ok();
+        await orderDao.updateById(orderId, { status: constants.orderStatus.CANCELLED });
+        res.ok({ data: { title: 'Order cancelled successfully' } });
       } catch (err) {
         console.log(err);
         res.serverError(err);
@@ -83,9 +85,27 @@ module.exports = {
     auth.authorizeAdminOrOwner,
     async (req, res, orderId) => {
       try {
-        console.log(orderId);
+        const { status } = req.body;
+        const order = await orderDao.findById(orderId);
+        if (!order) {
+          if (!order) {
+            res.notFound({
+              title: 'Order not found',
+              code: erorrCodes.ORDER_NOT_FOUND,
+            });
+            return;
+          }
+        }
+        if (order.status === constants.orderStatus.CANCELLED) {
+          res.badRequest({
+            title: 'Order cancelled',
+            code: erorrCodes.ORDER_ALREADY_CANCELLED,
+          });
+          return;
+        }
+        await orderDao.updateById(orderId, { status });
 
-        res.ok();
+        res.ok({ data: 'Order status successfully updated' });
       } catch (err) {
         console.log(err);
         res.serverError(err);

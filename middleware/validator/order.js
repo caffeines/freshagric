@@ -26,7 +26,7 @@ const createOrderValidate = (req, res, next) => {
 
 const validateOrderdUser = async (req, res, next) => {
   const { orderId } = req.params;
-  const order = await orderDao.findByid(orderId);
+  const order = await orderDao.findById(orderId);
   if (!order) {
     res.notFound({
       title: 'Order not found',

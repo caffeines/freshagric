@@ -41,13 +41,13 @@ const authenticate = async (req, res, next) => {
 exports.authenticate = authenticate;
 
 const authorizeAdminOrOwner = (req, res, next) => {
-  if (req.admin) {
-    next();
+  if (!req.admin) {
+    res.forbidden({
+      title: 'You are not authorized',
+      code: errorCodes.NOT_ADMIN_OR_OWNER,
+    });
     return;
   }
-  res.forbidden({
-    title: 'You are not authorized',
-    code: errorCodes.NOT_ADMIN_OR_OWNER,
-  });
+  next();
 };
 exports.authorizeAdminOrOwner = authorizeAdminOrOwner;

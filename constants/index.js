@@ -21,6 +21,7 @@ module.exports = {
     DELEVERED: 'delevered',
     ACCEPTED: 'accepted',
     REJECTED: 'rejected',
+    CANCELLED: 'cancel',
     CONFIRM_REQUIRED: 'cofirmRequired',
   },
 };

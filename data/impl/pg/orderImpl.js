@@ -68,12 +68,29 @@ module.exports = {
     }
   },
   findByUserEmail: async (email) => {
-    const orders = await knex('Orders')
-      .where({ userId: email });
-    return orders;
+    try {
+      const orders = await knex('Orders')
+        .where({ userId: email });
+      return orders;
+    } catch (err) {
+      return Promise.reject(err);
+    }
   },
-  findByid: async (orderId) => {
-    const [order] = await knex('Orders as O').where({ id: orderId });
-    return order;
+  findById: async (orderId) => {
+    try {
+      const [order] = await knex('Orders as O').where({ id: orderId });
+      return order;
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+  updateById: async (orderId, option) => {
+    try {
+      await knex('Orders').update(option)
+        .where({ id: orderId });
+      return {};
+    } catch (err) {
+      return Promise.reject(err);
+    }
   },
 };
