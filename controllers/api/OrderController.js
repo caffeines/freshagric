@@ -1,6 +1,7 @@
 const auth = require('../../middleware/auth');
 const validator = require('../../middleware/validator/order');
 const orderDao = require('../../data/orderDao');
+const orderItemDao = require('../../data/orderItemDao');
 const errorCodes = require('../../constants/errorCodes');
 
 module.exports = {
@@ -31,10 +32,11 @@ module.exports = {
   ],
   get_index_orderId: [
     auth.authenticate,
+    validator.validateOrderdUser,
     async (req, res, orderId) => {
       try {
-        const { order, orderItems } = await orderDao.findByid(orderId);
-        res.ok({ data: { ...order, orderItems } });
+        const orderItems = await orderItemDao.findByOrderId(orderId);
+        res.ok({ data: { order: req.order, orderItems } });
       } catch (err) {
         console.log(err);
         res.serverError(err);

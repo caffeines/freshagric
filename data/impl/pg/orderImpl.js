@@ -68,61 +68,12 @@ module.exports = {
     }
   },
   findByUserEmail: async (email) => {
-    const orders = await knex('Orders as O')
-      .join('OrderItems as OI', 'OI.orderId', 'O.id')
-      .rightJoin('Products as P', 'P.id', 'OI.productId')
-      .select(['O.id as orderId', 'userId', 'O.createdAt', 'O.status as status', 'totalPrice', 'deliveryAddress',
-        'P.id as productId', 'OI.quantity', 'P.name', 'slug', 'category', 'SKU', 'price', 'image', 'unit'])
+    const orders = await knex('Orders')
       .where({ userId: email });
-
-    const ret = [];
-    const orderMap = {};
-    let idx = 0;
-    orders.forEach((o) => {
-      const {
-        orderId, userId, createdAt, status, totalPrice, deliveryAddress, uodatedAt,
-        productId, quantity, name, slug, category, SKU, price, image, unit,
-      } = o;
-      const mapedIdx = orderMap[o.id];
-      if (mapedIdx === undefined) {
-        orderMap[o.id] = idx;
-        ret.push({
-          orderId,
-          userId,
-          createdAt,
-          status,
-          totalPrice,
-          deliveryAddress,
-          uodatedAt,
-          orderItems: [{
-            productId,
-            quantity,
-            name,
-            slug,
-            category,
-            SKU,
-            price,
-            image,
-            unit,
-          }],
-        });
-        idx += 1;
-      } else {
-        ret[mapedIdx].orderItems.push({
-          productId, quantity, name, slug, category, SKU, price, image, unit,
-        });
-      }
-    });
-    return ret;
+    return orders;
   },
   findByid: async (orderId) => {
     const [order] = await knex('Orders as O').where({ id: orderId });
-    const orderItems = await knex('OrderItems as OI')
-      .rightJoin('Products as P', 'P.id', 'OI.productId')
-      .select(['P.id as productId', 'OI.quantity', 'P.name', 'slug',
-        'category', 'SKU', 'price', 'image', 'unit'])
-      .where({ orderId });
-
-    return { order, orderItems };
+    return order;
   },
 };

@@ -1,4 +1,5 @@
 const joi = require('joi');
+const orderDao = require('../../data/orderDao');
 const erorrCodes = require('../../constants/errorCodes');
 
 const createOrderValidate = (req, res, next) => {
@@ -23,6 +24,32 @@ const createOrderValidate = (req, res, next) => {
   next();
 };
 
+const validateOrderdUser = async (req, res, next) => {
+  const { orderId } = req.params;
+  const order = await orderDao.findByid(orderId);
+  if (!order) {
+    res.notFound({
+      title: 'Order not found',
+      code: erorrCodes.ORDER_NOT_FOUND,
+    });
+    return;
+  }
+  req.order = order;
+  if (req.admin) {
+    next();
+    return;
+  }
+  if (order.userId !== req.user.email) {
+    res.forbidden({
+      title: 'You aren\'t permit to access this order',
+      code: erorrCodes.UNAUTHORIZED_ORDER_ACCESS,
+    });
+    return;
+  }
+  next();
+};
+
 module.exports = {
   createOrderValidate,
+  validateOrderdUser,
 };
