@@ -42,7 +42,6 @@ module.exports = {
         }
         const hashPassword = await bcrypt.hash(req.body.password, config.server.saltRound);
         const createdUser = await userDao.createUser({ ...req.body, password: hashPassword });
-        console.log(createdUser);
 
         res.ok({ title: 'User created successfully' });
       } catch (err) {
@@ -119,7 +118,6 @@ module.exports = {
             return;
           }
           const code = await userDao.updateVerificationCode(user.email);
-          console.log(code);
           // TODO: Send email later
           res.forbidden({
             title: 'Verify your email',
@@ -140,6 +138,7 @@ module.exports = {
           name: user.name,
           contact: user.contact,
           userType: user.userType,
+          email: user.email,
           profilePicture: user.profilePicture,
           address: user.address,
           joinedAt: user.joinedAt,

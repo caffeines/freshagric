@@ -73,6 +73,13 @@ module.exports = {
     validator.validateOrderdUser,
     async (req, res, orderId) => {
       try {
+        if (req.order.status === constants.orderStatus.ACCEPTED) {
+          res.badRequest({
+            title: 'Order already accepted',
+            code: erorrCodes.ORDER_ALREADY_ACCEPTED,
+          });
+          return;
+        }
         await orderDao.updateById(orderId, { status: constants.orderStatus.CANCELLED });
         res.ok({ data: { title: 'Order cancelled successfully' } });
       } catch (err) {

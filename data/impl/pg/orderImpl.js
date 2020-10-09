@@ -1,4 +1,4 @@
-const { v4: uuid } = require('uuid');
+const short = require('shortid');
 const constants = require('../../../constants');
 const knex = require('../../../lib/knexhelper').getKnexInstance();
 
@@ -24,7 +24,7 @@ module.exports = {
           deliveryAddress,
           deliveryArea,
           totalPrice,
-          id: uuid(),
+          id: short.generate(),
           status: constants.orderStatus.IN_QUEUE,
           createdAt: new Date(),
         };
@@ -73,7 +73,8 @@ module.exports = {
   findByUserEmail: async (email) => {
     try {
       const orders = await knex('Orders')
-        .where({ userId: email });
+        .where({ userId: email })
+        .orderBy('createdAt', 'desc');
       return orders;
     } catch (err) {
       return Promise.reject(err);
@@ -105,7 +106,8 @@ module.exports = {
         'O.updatedAt', 'status', 'deliveryAddress', 'totalPrice'];
       const orders = await knex('Orders as O')
         .join('Users as U', 'U.email', 'O.userId')
-        .select(selectFields);
+        .select(selectFields)
+        .orderBy('O.createdAt', 'desc');
       return orders;
     } catch (err) {
       return Promise.reject(err);
