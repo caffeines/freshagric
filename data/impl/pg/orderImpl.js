@@ -5,7 +5,9 @@ const knex = require('../../../lib/knexhelper').getKnexInstance();
 module.exports = {
   create: async (data) => {
     try {
-      const { items, userId, deliveryAddress } = data;
+      const {
+        items, userId, deliveryAddress, deliveryArea,
+      } = data;
       const ret = await knex.transaction(async (txn) => {
         const orderItemsObj = {};
         const orderItemsId = [];
@@ -20,6 +22,7 @@ module.exports = {
         const order = {
           userId,
           deliveryAddress,
+          deliveryArea,
           totalPrice,
           id: uuid(),
           status: constants.orderStatus.IN_QUEUE,

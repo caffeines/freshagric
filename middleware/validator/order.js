@@ -9,6 +9,7 @@ const createOrderValidate = (req, res, next) => {
   });
   const orderSchema = joi.object().keys({
     deliveryAddress: joi.string().trim().required(),
+    deliveryArea: joi.string().trim().required(),
     items: joi.array().min(1).items(itemsSchema).required(),
   });
   const { value, error } = orderSchema.validate(req.body);
