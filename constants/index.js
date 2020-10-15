@@ -24,4 +24,7 @@ module.exports = {
     CANCELLED: 'cancel',
     CONFIRM_REQUIRED: 'cofirmRequired',
   },
+  delivery: {
+    COST: 40,
+  },
 };

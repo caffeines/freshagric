@@ -18,7 +18,8 @@ module.exports = {
         const products = await txn('Products').whereIn('id', orderItemsId);
 
         const totalPrice = products
-          .reduce((sum, p) => sum + p.price * orderItemsObj[p.id].quantity, 0);
+          .reduce((sum, p) => sum + p.price * orderItemsObj[p.id].quantity, 0)
+          + constants.delivery.COST;
         const order = {
           userId,
           deliveryAddress,
