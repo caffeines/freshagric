@@ -5,6 +5,18 @@ const errorCodes = require('../../constants/errorCodes');
 const utils = require('../../lib/utils');
 const config = require('../../config');
 const jwt = require('../../lib/jwt');
+const mailSender = require('../../service/mailer');
+
+const sendVerificationMail = ({ email }, code) => {
+  const url = `${config.server.serverLink}/api/auth/verify/${email}?token=${code}`;
+  const mail = {
+    to: email,
+    subject: 'Fresh Agric email verification',
+    html: `<h3>Please verify your email</h3> </br>
+            <a href="${url}">Verify Email</a>`,
+  };
+  mailSender(mail);
+};
 
 module.exports = {
   post_register: [
@@ -26,8 +38,7 @@ module.exports = {
               return;
             }
             const code = await userDao.updateVerificationCode(user.email);
-            console.log(code);
-            // TODO: Send email later
+            sendVerificationMail(user, code);
             res.forbidden({
               title: 'Verify your email',
               code: errorCodes.USER_NOT_VERIFIED,
@@ -42,7 +53,7 @@ module.exports = {
         }
         const hashPassword = await bcrypt.hash(req.body.password, config.server.saltRound);
         const createdUser = await userDao.createUser({ ...req.body, password: hashPassword });
-
+        sendVerificationMail(createdUser, createdUser.verificationCode);
         res.ok({ title: 'User created successfully' });
       } catch (err) {
         console.log(err);
@@ -118,7 +129,7 @@ module.exports = {
             return;
           }
           const code = await userDao.updateVerificationCode(user.email);
-          // TODO: Send email later
+          sendVerificationMail(user, code);
           res.forbidden({
             title: 'Verify your email',
             code: errorCodes.USER_NOT_VERIFIED,

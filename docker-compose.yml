@@ -1,24 +1,16 @@
 version: '3.1'
 
 services:
-  adminer:
-    image: adminer
-    container_name: freshagric-adminer
-    restart: always
+  redis:
+    image: redis
+    container_name: freshagric-redis
+    volumes:
+      - redis_data:/data
+    command: redis-server --requirepass password
     ports:
-      - 8082:8080
+      - '6379:6379'
     networks:
       - app-network
-  # redis:
-  #   image: redis
-  #   container_name: freshagric-redis
-  #   volumes:
-  #     - redis_data:/data
-  #   command: redis-server --requirepass password
-  #   ports:
-  #     - '6379:6379'
-  #   networks:
-  #     - app-network
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: freshagric-rabbitmq
@@ -28,7 +20,7 @@ services:
     networks:
       - app-network
 volumes:
-  # redis_data:
+  redis_data:
 networks:
   app-network:
     driver: bridge

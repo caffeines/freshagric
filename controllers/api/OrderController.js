@@ -91,6 +91,7 @@ module.exports = {
   patch_orderId: [
     auth.authenticate,
     auth.authorizeAdminOrOwner,
+    validator.updateOrderValidator,
     async (req, res, orderId) => {
       try {
         const { status } = req.body;

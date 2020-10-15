@@ -1,6 +1,7 @@
 const joi = require('joi');
 const orderDao = require('../../data/orderDao');
 const erorrCodes = require('../../constants/errorCodes');
+const constants = require('../../constants/index');
 
 const createOrderValidate = (req, res, next) => {
   const itemsSchema = joi.object().keys({
@@ -49,8 +50,26 @@ const validateOrderdUser = async (req, res, next) => {
   }
   next();
 };
-
+const updateOrderValidator = (req, res, next) => {
+  const schema = joi.object().keys({
+    status: joi.string().trim().required(),
+  });
+  const { value, error } = schema.validate(req.body);
+  const status = Object.values(constants.orderStatus);
+  const isValid = status.includes(req.body.status);
+  if (error || !isValid) {
+    res.badRequest({
+      title: 'Invalid order status',
+      error,
+      code: erorrCodes.ORDER_UPDATE_INVALID_STATUS,
+    });
+    return;
+  }
+  req.body = value;
+  next();
+};
 module.exports = {
   createOrderValidate,
   validateOrderdUser,
+  updateOrderValidator,
 };
