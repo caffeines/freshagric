@@ -1,22 +1,16 @@
 version: '3.1'
 
 services:
-  web:
-    build:
-        context: .
-        dockerfile: Dockerfile
-    image: freshagric
-    container_name: freshagric
-    restart: always
-    env_file: prod.env
+  postgres:
+    image: postgres:10
     ports:
-        - 80:4400
+      - 5432:5432
+    environment:
+      POSTGRES_DB: freshagricdev
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: admin
     volumes:
-        - .:/home/freshagric/app
-        - /home/freshagric/app/node_modules
-    command: node app.js
-    depends_on:
-        - redis
+      - "./storage/pg/:/var/lib/postgresql/data/"
     networks:
       - app-network
   redis:

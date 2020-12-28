@@ -53,10 +53,11 @@ module.exports = {
       try {
         const { order, orderItems } = await orderDao.create({
           ...req.body,
-          userId: req.admin.email,
+          userId: req.user ? req.user.email : req.admin.email,
         });
         res.ok({ data: { order, orderItems } });
       } catch (err) {
+        console.log(err);
         if (err.message === 'notAvailable') {
           res.badRequest({
             title: 'Product not available',

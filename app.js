@@ -4,7 +4,6 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const expressSession = require('express-session');
 const RedisStore = require('connect-redis')(expressSession);
-// const passport = require('passport');
 const bodyParser = require('body-parser');
 const bindControllersAsync = require('./controllers');
 const response = require('./middleware/response');
@@ -27,7 +26,6 @@ const setupServer = async () => {
     redis.init((err) => {
       if (err) reject(err);
       else {
-        // logger.info('connected to redis');
         console.log('connected to redis');
         resolve();
       }
@@ -50,7 +48,6 @@ const setupServer = async () => {
   app.use(session);
   app.use((req, res, next) => {
     if (!req.session) {
-      // logger.error('session store error');
       res.serverError({ message: 'session error' });
       return;
     }
