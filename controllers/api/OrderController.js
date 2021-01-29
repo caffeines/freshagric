@@ -12,7 +12,8 @@ module.exports = {
     auth.authorizeAdminOrOwner,
     async (req, res) => {
       try {
-        const orders = await orderDao.findAll();
+        const { page } = req.params;
+        const orders = await orderDao.findAll(page);
         res.ok({ data: { orders } });
       } catch (err) {
         console.log(err);

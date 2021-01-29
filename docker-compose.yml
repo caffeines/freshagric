@@ -13,6 +13,14 @@ services:
       - "./storage/pg/:/var/lib/postgresql/data/"
     networks:
       - app-network
+  adminer:
+    image: adminer
+    container_name: adminerpg
+    restart: always
+    ports:
+      - 8081:8080
+    networks:
+      - app-network
   redis:
     image: redis
     container_name: freshagric-redis

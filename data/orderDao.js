@@ -5,5 +5,5 @@ module.exports = {
   findByUserEmail: async (email) => impl.findByUserEmail(email),
   findById: async (orderId) => impl.findById(orderId),
   updateById: async (orderId, option) => impl.updateById(orderId, option),
-  findAll: async () => impl.findAll(),
+  findAll: async (page) => impl.findAll(page),
 };

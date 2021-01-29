@@ -101,14 +101,16 @@ module.exports = {
       return Promise.reject(err);
     }
   },
-  findAll: async () => {
+  findAll: async (page = 0) => {
     try {
       const selectFields = ['U.name as user', 'U.contact', 'U.email', 'U.address', 'O.id', 'O.createdAt',
         'O.updatedAt', 'status', 'deliveryAddress', 'totalPrice'];
       const orders = await knex('Orders as O')
         .join('Users as U', 'U.email', 'O.userId')
         .select(selectFields)
-        .orderBy('O.createdAt', 'desc');
+        .orderBy('O.createdAt', 'desc')
+        .limit(20)
+        .offset(page * 20);
       return orders;
     } catch (err) {
       return Promise.reject(err);
