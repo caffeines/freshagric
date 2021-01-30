@@ -30,6 +30,20 @@ module.exports = {
       }
     },
   ],
+  get_index_all: [
+    auth.authenticate,
+    auth.authorizeAdminOrOwner,
+    async (req, res) => {
+      try {
+        const products = await productDao.getAllProducts(true);
+        res.ok({ data: products });
+      } catch (err) {
+        res.serverError(err);
+        console.log(err);
+      }
+    },
+
+  ],
   post_index: [
     auth.authenticate,
     auth.authorizeAdminOrOwner,

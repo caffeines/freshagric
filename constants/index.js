@@ -18,7 +18,7 @@ module.exports = {
   },
   orderStatus: {
     IN_QUEUE: 'inQueue',
-    DELEVERED: 'delevered',
+    DELIVERED: 'delivered',
     ACCEPTED: 'accepted',
     REJECTED: 'rejected',
     CANCELLED: 'cancel',

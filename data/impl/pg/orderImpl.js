@@ -1,5 +1,5 @@
-const short = require('shortid');
 const constants = require('../../../constants');
+const { cryptoRandomString } = require('../../../lib/utils');
 const knex = require('../../../lib/knexhelper').getKnexInstance();
 
 module.exports = {
@@ -20,12 +20,13 @@ module.exports = {
         const totalPrice = products
           .reduce((sum, p) => sum + p.price * orderItemsObj[p.id].quantity, 0)
           + constants.delivery.COST;
+        const id = await cryptoRandomString(8, { numeric: false });
         const order = {
           userId,
           deliveryAddress,
           deliveryArea,
           totalPrice,
-          id: short.generate(),
+          id,
           status: constants.orderStatus.IN_QUEUE,
           createdAt: new Date(),
         };
@@ -104,7 +105,7 @@ module.exports = {
   findAll: async (page = 0) => {
     try {
       const selectFields = ['U.name as user', 'U.contact', 'U.email', 'U.address', 'O.id', 'O.createdAt',
-        'O.updatedAt', 'status', 'deliveryAddress', 'totalPrice'];
+        'O.updatedAt', 'status', 'deliveryAddress', 'totalPrice', 'deliveryArea'];
       const orders = await knex('Orders as O')
         .join('Users as U', 'U.email', 'O.userId')
         .select(selectFields)
