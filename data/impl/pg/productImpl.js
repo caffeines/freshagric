@@ -5,7 +5,7 @@ const knex = require('../../../lib/knexhelper').getKnexInstance();
 
 const safeFields = ['cost', 'createdBy', 'updatedBy', 'updatedAt'];
 const selectFields = ['createdAt', 'SKU', 'slug', 'id', 'name', 'description',
-  'category', 'price', 'unit', 'stock', 'isOrganic', 'image'];
+  'category', 'price', 'unit', 'stock', 'isOrganic', 'image', 'maxQuantityCount'];
 
 module.exports = {
   /**
