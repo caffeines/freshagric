@@ -36,8 +36,8 @@ module.exports = {
         const products = await productDao.getAllProducts(true);
         res.ok({ data: products });
       } catch (err) {
-        res.serverError(err);
         console.log(err);
+        res.serverError(err);
       }
     },
   ],

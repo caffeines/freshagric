@@ -5,6 +5,9 @@ const router = express.Router();
 
 const bindControllersAsync = (app) => new Promise((resolve, reject) => {
   app.use(router);
+  router.get('/', (req, res) => {
+    res.ok({ health: 'OK' });
+  });
   expressController.setDirectory('controllers').bind(router, (err) => {
     if (err) {
       console.error(err);

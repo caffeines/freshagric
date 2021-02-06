@@ -2,13 +2,10 @@ const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const expressSession = require('express-session');
-const RedisStore = require('connect-redis')(expressSession);
 const bodyParser = require('body-parser');
 const bindControllersAsync = require('./controllers');
 const response = require('./middleware/response');
 const config = require('./config');
-const redis = require('./lib/redis');
 const bindDatabase = require('./database');
 
 const setupServer = async () => {
@@ -22,37 +19,6 @@ const setupServer = async () => {
   app.use(bodyParser.json());
   app.use(response);
   app.use(cors());
-  await new Promise((resolve, reject) => {
-    redis.init((err) => {
-      if (err) reject(err);
-      else {
-        console.log('connected to redis');
-        resolve();
-      }
-    });
-  });
-  const { client: redisClient } = redis.getClients();
-
-  // set up session
-  const store = new RedisStore({ client: redisClient });
-  const session = expressSession({
-    store,
-    name: config.session.name,
-    secret: config.session.secret,
-    resave: false,
-    rolling: true,
-    saveUninitialized: false,
-    cookie: { maxAge: config.session.maxAge },
-  });
-
-  app.use(session);
-  app.use((req, res, next) => {
-    if (!req.session) {
-      res.serverError({ message: 'session error' });
-      return;
-    }
-    next();
-  });
 
   await bindDatabase();
   await bindControllersAsync(app);

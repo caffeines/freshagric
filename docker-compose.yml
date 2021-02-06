@@ -5,10 +5,11 @@ services:
     image: postgres:10
     ports:
       - 5432:5432
+    env_file: dev.env
     environment:
-      POSTGRES_DB: freshagricdev
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: admin
+      POSTGRES_DB: $${PG_DATABASE}
+      POSTGRES_PASSWORD: $${PG_PASSWORD}
+      POSTGRES_USER: $${PG_USER}
     volumes:
       - "./storage/pg/:/var/lib/postgresql/data/"
     networks:
@@ -21,26 +22,21 @@ services:
       - 8081:8080
     networks:
       - app-network
-  redis:
-    image: redis
-    container_name: freshagric-redis
+  web:
+    image: caffeines/freshagric:v0.0.1-rc
+    container_name: freshagric
+    restart: always
+    env_file: dev.env
+    ports:
+        - 4782:4782
     volumes:
-      - redis_data:/data
-    command: redis-server --requirepass password
-    ports:
-      - '6379:6379'
+        - .:/home/freshagric/app
+        - /home/freshagric/app/node_modules
+    command: node app.js
+    depends_on:
+        - postgres
     networks:
       - app-network
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    container_name: freshagric-rabbitmq
-    ports:
-      - "15672:15672"
-      - "5672:5672"
-    networks:
-      - app-network
-volumes:
-  redis_data:
 networks:
   app-network:
     driver: bridge

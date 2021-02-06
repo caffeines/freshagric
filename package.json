@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": ". ./loadEnv ./dev.env && nodemon app",
-    "migrate-dev": ". ./loadEnv ./dev.env && knex migrate:latest"
+    "migrate-dev": ". ./loadEnv ./dev.env && knex migrate:latest",
+    "migrate": ". ./loadEnv ./prod.env && knex migrate:latest"
   },
   "repository": "https://github.com/caffeines/freshagric.git",
   "author": "caffeines <sadat.talks@gmail.com>",
