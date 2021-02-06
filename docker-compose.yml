@@ -1,40 +1,25 @@
 version: '3.1'
 
 services:
-  postgres:
-    image: postgres:10
+  pgadmin:
+    image: dpage/pgadmin4
     ports:
-      - 5432:5432
-    env_file: dev.env
+      - "53603:53603"
+      - "80:80"
     environment:
-      POSTGRES_DB: $${PG_DATABASE}
-      POSTGRES_PASSWORD: $${PG_PASSWORD}
-      POSTGRES_USER: $${PG_USER}
-    volumes:
-      - "./storage/pg/:/var/lib/postgresql/data/"
-    networks:
-      - app-network
-  adminer:
-    image: adminer
-    container_name: adminerpg
-    restart: always
-    ports:
-      - 8081:8080
-    networks:
-      - app-network
+      PGADMIN_DEFAULT_EMAIL: admin@pg.com
+      PGADMIN_DEFAULT_PASSWORD: admin#
   web:
-    image: caffeines/freshagric:v0.0.1-rc
+    image: caffeines/freshagric:v0.0.1-beta
     container_name: freshagric
     restart: always
     env_file: dev.env
     ports:
-        - 4782:4782
+        - 4400:4400
     volumes:
         - .:/home/freshagric/app
         - /home/freshagric/app/node_modules
     command: node app.js
-    depends_on:
-        - postgres
     networks:
       - app-network
 networks:
