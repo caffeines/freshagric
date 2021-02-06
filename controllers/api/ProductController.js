@@ -10,8 +10,6 @@ module.exports = {
       try {
         const { name } = req.query;
         const products = await productDao.searchByName(name);
-        console.log(products);
-
         res.ok({ data: products });
       } catch (err) {
         console.log(err);
@@ -42,7 +40,6 @@ module.exports = {
         console.log(err);
       }
     },
-
   ],
   post_index: [
     auth.authenticate,
