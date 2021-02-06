@@ -1,11 +1,21 @@
 version: '3.1'
 
 services:
+  nginx:
+    image: nginx:latest
+    container_name: freshagric_nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - app-network
   pgadmin:
     image: dpage/pgadmin4
     ports:
       - "53603:53603"
-      - "80:80"
+      - "8081:80"
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@pg.com
       PGADMIN_DEFAULT_PASSWORD: admin#
