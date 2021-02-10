@@ -1,0 +1,3 @@
+1. Issue in verification token
+2. After login registration page should be gone
+3. Issue in order
